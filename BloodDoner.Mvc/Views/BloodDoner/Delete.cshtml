@@ -1,0 +1,63 @@
+﻿@model BloodDonerListViewModel
+
+@{
+    ViewData["Title"] = "Delete Donor";
+}
+
+<h2>Delete Confirmation</h2>
+
+<div class="alert alert-danger">
+    Are you sure you want to delete this donor?
+
+</div>
+
+
+    <div class="row">
+        <div class="col-md-3">
+            @if (!string.IsNullOrEmpty(Model.ProfilePicture))
+            {
+                <img src="~/@Model.ProfilePicture" alt="Profile Picture" class="img-thumbnail" style="width:100%; height:auto;" />
+            }
+            else
+            {
+                <img src="~/images/default-profile.png" alt="No Image" class="img-thumbnail" />
+            }
+        </div>
+        <div class="col-md-9">
+            <dl class="row">
+                <dt class="col-sm-4">Full Name</dt>
+                <dd class="col-sm-8">@Model.FullName</dd>
+
+                <dt class="col-sm-4">Contact Number</dt>
+                <dd class="col-sm-8">@Model.ContactNumber</dd>
+
+                <dt class="col-sm-4">Email</dt>
+                <dd class="col-sm-8">@Model.Email</dd>
+
+                <dt class="col-sm-4">Blood Group</dt>
+                <dd class="col-sm-8">@Model.BloodGroup</dd>
+
+                <dt class="col-sm-4">Age</dt>
+                <dd class="col-sm-8">@Model.Age</dd>
+
+                <dt class="col-sm-4">Address</dt>
+                <dd class="col-sm-8">@Model.Address</dd>
+
+                <dt class="col-sm-4">Last Donation</dt>
+                <dd class="col-sm-8">@Model.LastDonationDate</dd>
+
+                <dt class="col-sm-4">Eligibility</dt>
+                <dd class="col-sm-8">
+                    <span class="badge @(Model.IsEligible ? "bg-success" : "bg-danger")">
+                        @(Model.IsEligible ? "Eligible" : "Not Eligible")
+                    </span>
+                </dd>
+            </dl>
+        </div>
+    </div>
+
+<form asp-action="DeleteConfirmed" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
