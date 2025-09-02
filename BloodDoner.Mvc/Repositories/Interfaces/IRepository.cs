@@ -7,7 +7,7 @@ namespace BloodDoner.Mvc.Repositories.Interfaces
     {
         Task<List<T>> GetAllAsync();
         Task<T?> GetByIdAsync(int id);
-
+        IQueryable<T> Query();
         void Add(T bloodDoner);
         void Update(T bloodDoner);
         void Delete(T bloodDoner);

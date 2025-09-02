@@ -16,7 +16,7 @@ namespace BloodDoner.Mvc.Repositories.Implementations
 
         public void Add(T bloodDoner)
         {
-            throw new NotImplementedException();
+            _dbset.Add(bloodDoner);
         }
 
         public void Delete(T bloodDoner)
@@ -34,9 +34,14 @@ namespace BloodDoner.Mvc.Repositories.Implementations
          return await _dbset.FindAsync(id);
         }
 
+        public IQueryable<T> Query() 
+        {
+            return _dbset.AsQueryable().AsNoTracking();
+        }
+
         public void Update(T bloodDoner)
         {
-            throw new NotImplementedException();
+            _dbset.Update(bloodDoner);
         }
     }
 }

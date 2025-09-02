@@ -20,14 +20,16 @@ namespace BloodDoner.Mvc.Services.Implementations
         {
             _unitOfWork = unitOfWork;
         }
-        public Task AddAsync(BloodDonerEntity bloodDoner)
+        public async Task AddAsync(BloodDonerEntity bloodDoner)
         {
-            throw new NotImplementedException();
+            _unitOfWork.BloodDonerRepository.Add(bloodDoner);
+             await _unitOfWork.SaveAsync();
         }
 
         public Task UpdateAsync(BloodDonerEntity bloodDoner)
         {
-            throw new NotImplementedException();
+            _unitOfWork.BloodDonerRepository.Update(bloodDoner);
+            return _unitOfWork.SaveAsync();
         }
 
         public Task<IEnumerable<BloodDonerEntity>> GetAllAsync()
@@ -51,35 +53,17 @@ namespace BloodDoner.Mvc.Services.Implementations
             
         }
 
-        public async Task<List<BloodDonerListViewModel>> GetFilteredBloodDonerAsync(FilterDonerModel filter)
+        public async Task<List<BloodDonerEntity>> GetFilteredBloodDonerAsync(FilterDonerModel filter)
         {
-            var query = (await _unitOfWork.BloodDonerRepository.GetAllAsync()).AsEnumerable();
+            var query = _unitOfWork.BloodDonerRepository.Query();
 
             if (!string.IsNullOrEmpty(filter.bloodGroup))
                 query = query.Where(d => d.BloodGroup.ToString() == filter.bloodGroup);
             if (!string.IsNullOrEmpty(filter.address))
                 query = query.Where(d => d.Address != null && d.Address.Contains(filter.address));
 
-            var donors = query.Select(d => new BloodDonerListViewModel
-            {
-                Id = d.Id,
-                FullName = d.FullName,
-                ContactNumber = d.ContactNumber,
-                Age = DateTime.Now.Year - d.DateofBirth.Year,
-                Email = d.Email,
-                BloodGroup = d.BloodGroup.ToString(),
-                Address = d.Address,
-                LastDonationDate = DateHelper.GetLastDonationDateString(d.LastDonationDate),
-                ProfilePicture = d.ProfilePicture,
-                IsEligible = (d.Weight > 45 && d.Weight < 200) && !d.LastDonationDate.HasValue || (DateTime.Now - d.LastDonationDate.Value).TotalDays >= 90
-
-            }).ToList();
-
-            if (filter.isEligible.HasValue)
-            {
-                donors = donors.Where(x => x.IsEligible == filter.isEligible).ToList();
-            }
-            return donors;
+           
+            return await query.ToListAsync();
         }
 
         public Task<IEnumerable<BloodDonerEntity>> GetFilteredBloodDonerAsync()

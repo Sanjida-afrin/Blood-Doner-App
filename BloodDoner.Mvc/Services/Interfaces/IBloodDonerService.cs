@@ -7,7 +7,7 @@ namespace BloodDoner.Mvc.Services.Interfaces
     public interface IBloodDonerService
     {
         Task<IEnumerable<BloodDonerEntity>> GetAllAsync();
-        Task<List<BloodDonerListViewModel>> GetFilteredBloodDonerAsync(FilterDonerModel filter);
+        Task<List<BloodDonerEntity>> GetFilteredBloodDonerAsync(FilterDonerModel filter);
 
         Task<BloodDonerEntity?> GetByIdAsync(int id);
         Task AddAsync(BloodDonerEntity bloodDoner);
