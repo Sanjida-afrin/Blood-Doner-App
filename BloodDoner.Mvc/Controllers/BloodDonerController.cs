@@ -4,6 +4,7 @@ using BloodDoner.Mvc.Model;
 using BloodDoner.Mvc.Models.Entities;
 using BloodDoner.Mvc.Models.ViewModel;
 using BloodDoner.Mvc.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BloodDoner.Mvc.Controllers
@@ -22,6 +23,7 @@ namespace BloodDoner.Mvc.Controllers
             _configuration = configuation;
         }
 
+        [Authorize]
         public async Task<IActionResult> Index([FromQuery]FilterDonerModel filter)
         {
             var dbconnection = _configuration.GetConnectionString("DefaultConnection");
