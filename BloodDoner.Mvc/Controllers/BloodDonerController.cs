@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BloodDoner.Mvc.Controllers
 {
+    [Authorize]
     public class BloodDonerController : Controller
     {
         private readonly IFileService _fileService;
@@ -22,9 +23,8 @@ namespace BloodDoner.Mvc.Controllers
             _mapper = mapper;
             _configuration = configuation;
         }
-
-        [Authorize]
-        public async Task<IActionResult> Index([FromQuery]FilterDonerModel filter)
+        [AllowAnonymous]
+        public async Task<IActionResult> Index([FromQuery] FilterDonerModel filter)
         {
             var dbconnection = _configuration.GetConnectionString("DefaultConnection");
             var donors = await _bloodDonerService.GetFilteredBloodDonerAsync(filter);
@@ -33,6 +33,7 @@ namespace BloodDoner.Mvc.Controllers
             return View(donorViewModels);
         }
 
+        [Authorize]
         public IActionResult Create()
         {
             return View();
@@ -88,7 +89,7 @@ namespace BloodDoner.Mvc.Controllers
             return RedirectToAction("Index");
         }
 
-
+        [Authorize(Roles = "Admin")]
         public  async Task<IActionResult> DeleteAsync(int id)
         {
             var donor = await _bloodDonerService.GetByIdAsync(id);

@@ -8,16 +8,27 @@ using BloodDoner.Mvc.Repositories.Interfaces;
 using BloodDoner.Mvc.Services.Implementation;
 using BloodDoner.Mvc.Services.Implementations;
 using BloodDoner.Mvc.Services.Interfaces;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
+builder.Services.AddRazorPages();
+builder.Services.AddDbContext<BloodDonerDbContext>(options => 
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddDbContext<BloodDonerDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options=>
+{
+    options.SignIn.RequireConfirmedAccount = false;
+   
+})
+.AddEntityFrameworkStores<BloodDonerDbContext>()
+.AddDefaultTokenProviders()
+.AddDefaultUI();
+
 builder.Services.AddScoped<IBloodDonerRepository, BloodDonerRepository>();
 builder.Services.AddScoped<IBloodDonerService, BloodDonerService>();
 builder.Services.AddTransient<IFileService, FileService>();
@@ -36,11 +47,7 @@ builder.Services.AddOptions<EmailSettings>()
     .ValidateDataAnnotations()
     .ValidateOnStart();
 
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options =>
-    {
-        options.LoginPath = "/BloodDoner/Create";
-    });
+
 
 var app = builder.Build();
 
@@ -68,5 +75,6 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
+app.MapRazorPages();
 
 app.Run();
