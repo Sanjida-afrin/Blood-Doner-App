@@ -17,15 +17,15 @@
                 <input asp-for="DonationDate" class="form-control" type="date" />
                 <span asp-validation-for="DonationDate" class="text-danger"></span>
             </div>
-            @* <div class="form-group"> *@
-            @*     <label asp-for="BloodDonerId" class="control-label">Doner</label> *@
-            @*     <select asp-for="BloodDonerId" class="form-control" asp-items="@(ViewData["donorList"] as SelectList)"> *@
-            @*         <option value="">Select Donor</option> *@
-            @*     </select> *@
-            @*     <span asp-validation-for="BloodDonerId" class="text-danger"></span> *@
-            @* </div> *@
+            <div class="form-group"> 
+                <label asp-for="BloodDonerId" class="control-label">Doner</label> 
+                <select asp-for="BloodDonerId" class="form-control" asp-items="@(ViewData["donorList"] as SelectList)"> 
+                    <option value="">Select Donor</option>
+                 </select>
+                 <span asp-validation-for="BloodDonerId" class="text-danger"></span>
+             </div>
 
-            @await Html.PartialAsync("_BloodDonerList", Model?.BloodDonerId)
+            @* @await Html.PartialAsync("_BloodDonerList", Model?.BloodDonerId) *@
 
 
             <div class="form-group">

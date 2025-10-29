@@ -8,8 +8,11 @@ using BloodDoner.Mvc.Repositories.Interfaces;
 using BloodDoner.Mvc.Services.Implementation;
 using BloodDoner.Mvc.Services.Implementations;
 using BloodDoner.Mvc.Services.Interfaces;
+using BloodDoner.Mvc.Extension;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
+using BloodDoner.Mvc.Logger;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,7 +20,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 builder.Services.AddRazorPages();
-builder.Services.AddDbContext<BloodDonerDbContext>(options => 
+builder.Services.AddDbContextPool<BloodDonerDbContext>(options => 
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options=>
@@ -28,6 +31,13 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options=>
 .AddEntityFrameworkStores<BloodDonerDbContext>()
 .AddDefaultTokenProviders()
 .AddDefaultUI();
+
+//Log.Logger= new LoggerConfiguration()
+//    .ReadFrom.Configuration(builder.Configuration)
+//    .CreateLogger();
+//builder.Services.AddSerilog();
+
+builder.Logging.AddProvider(new CustomLoggerProvider());
 
 builder.Services.AddScoped<IBloodDonerRepository, BloodDonerRepository>();
 builder.Services.AddScoped<IBloodDonerService, BloodDonerService>();
@@ -41,6 +51,10 @@ builder.Configuration
     .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true);
 
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("MailSettings"));
+builder.Services.AddAuthorization(options=>
+    {
+        AuthorizationPolicy.AddPolicies(options);
+    });
 
 builder.Services.AddOptions<EmailSettings>()
     .BindConfiguration("EmailSettings")
@@ -63,7 +77,6 @@ app.UseHttpsRedirection();
 app.UseRouting();
 
 app.UseMiddleware<IPWhiteListingMiddleware>();
-app.UseMiddleware<RequestLoggingMiddleware>();
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -76,5 +89,8 @@ app.MapControllerRoute(
     .WithStaticAssets();
 
 app.MapRazorPages();
+
+await app.SeedDatabaseAsync();
+//app.UseSerilogRequestLogging();
 
 app.Run();

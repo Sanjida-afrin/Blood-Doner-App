@@ -2,7 +2,7 @@
 
 <div class="form-group">
     <label class="control-label">Donor</label>
-    <select class="form-control" asp-for="@Model"asp-items="@(ViewData["donorList"] as SelectList)">
+    <select class="form-control" name="BloodDonerId" asp-items="@(ViewData["donorList"] as SelectList)">
         <option value="">Select Donor</option>
     </select>
 </div>

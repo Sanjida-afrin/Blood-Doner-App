@@ -7,7 +7,10 @@ namespace BloodDoner.Mvc.Data
 {
     public class BloodDonerDbContext : IdentityDbContext<IdentityUser>
     {
-        public BloodDonerDbContext(DbContextOptions<BloodDonerDbContext> options) : base(options) { 
+        private readonly UserManager<IdentityUser> _userManager;
+        public BloodDonerDbContext(DbContextOptions<BloodDonerDbContext> options) : base(options) 
+        {
+        
         }
         public DbSet<BloodDonerEntity> BloodDoners { get; set; }
         public DbSet<Donation> Donations { get; set; }
@@ -23,11 +26,11 @@ namespace BloodDoner.Mvc.Data
                     FullName = "Sanjida Afrin",
                     ContactNumber = "957579758975",
                     DateofBirth = new DateTime(1990, 5, 10),
-                    Email="saima@gmail.com",
+                    Email = "saima@gmail.com",
                     BloodGroup = BloodGroup.BPositive,
-                    Weight=60,
-                    Address= "Chittagong",
-                    LastDonationDate= new DateTime(2024,11, 10),
+                    Weight = 60,
+                    Address = "Chittagong",
+                    LastDonationDate = new DateTime(2024, 11, 10),
                     ProfilePicture = "profiles/Screenshot (178).png",
 
                 },
@@ -44,10 +47,22 @@ namespace BloodDoner.Mvc.Data
                     LastDonationDate = new DateTime(2025, 11, 10),
                     ProfilePicture = "profiles/Screenshot (178).png",
 
-                }
-                );
+                });
+            modelBuilder.Entity<IdentityRole>()
+                .HasData(new IdentityRole
+                {
+                    Id = "1",
+                    Name = "Admin",
+                    NormalizedName = "ADMIN"
+                },
 
+                new IdentityRole
+                {
+                    Id = "2",
+                    Name = "Donor",
+                    NormalizedName = "Donor"
+                });
+          
         }
-
     }
 }

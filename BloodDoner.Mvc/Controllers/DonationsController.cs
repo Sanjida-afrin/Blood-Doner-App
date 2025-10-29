@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BloodDoner.Mvc.Data;
 using BloodDoner.Mvc.Models.Entities;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace BloodDoner.Mvc.Controllers
 {
+    [Authorize(Roles = "Donor,Admin")]
     public class DonationsController : Controller
     {
         private readonly BloodDonerDbContext _context;
@@ -59,6 +58,7 @@ namespace BloodDoner.Mvc.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy ="RequireAdminRole")]
         public async Task<IActionResult> Create([Bind("Id,DonationDate,BloodDonerId")] Donation donation)
         {
             if (ModelState.IsValid)
