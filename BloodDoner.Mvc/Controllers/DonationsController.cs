@@ -5,11 +5,12 @@ using Microsoft.EntityFrameworkCore;
 using BloodDoner.Mvc.Data;
 using BloodDoner.Mvc.Models.Entities;
 using Microsoft.AspNetCore.Authorization;
+using BloodDoner.Mvc.Models.ViewModel;
 
 
 namespace BloodDoner.Mvc.Controllers
 {
-    [Authorize(Roles = "Donor,Admin")]
+    [Authorize]
     public class DonationsController : Controller
     {
         private readonly BloodDonerDbContext _context;
@@ -22,7 +23,19 @@ namespace BloodDoner.Mvc.Controllers
         // GET: Donations
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Donations.ToListAsync());
+            var donations = await _context.Donations
+                .Include(d => d.BloodDoner)
+                .Include(d => d.Campaign)
+                .Select(d => new DonationListViewModel
+                {
+                    Id = d.Id,
+                    DonationDate = d.DonationDate,
+                    DonerName = d.BloodDoner.FullName,
+                    Campaign = d.Campaign.Title ?? string.Empty,
+                    Location = d.Location
+                })
+                .ToListAsync();
+            return View(donations);
         }
 
         // GET: Donations/Details/5
@@ -47,10 +60,23 @@ namespace BloodDoner.Mvc.Controllers
         public IActionResult Create()
         {
 
-            ViewBag.donorList = new SelectList(_context.BloodDoners, "Id", "FullName");
-            ViewData["donorList"] = new SelectList(_context.BloodDoners, "Id", "FullName");
-
-            return View();
+            var donationCreateViewModel = new DonationCreateViewModel
+            {
+                DonationDate = DateTime.Now,
+                Doners = _context.BloodDoners
+                 .Select(d => new SelectListItem
+                 {
+                     Value = d.Id.ToString(),
+                     Text = d.FullName
+                 }).ToList(),
+                Campaigns = _context.Campaigns
+                 .Select(c => new SelectListItem
+                 {
+                     Value = c.Id.ToString(),
+                     Text = c.Title
+                 }).ToList()
+            };
+            return View(donationCreateViewModel);
         }
 
         // POST: Donations/Create
@@ -58,17 +84,42 @@ namespace BloodDoner.Mvc.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Policy ="RequireAdminRole")]
-        public async Task<IActionResult> Create([Bind("Id,DonationDate,BloodDonerId")] Donation donation)
+        public async Task<IActionResult> Create(DonationCreateViewModel model)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(donation);
+                var donation = new Donation
+                {
+                    DonationDate = model.DonationDate,
+                    BloodDonerId = model.BloodDonerId,
+                    CampaignId = model.CampaignId,
+                    Location = model.Location
+                };
+                _context.Donations.Add(donation);
+                if (model.CampaignId.HasValue)
+                {
+                    var campaign = await _context.Campaigns.FindAsync(model.CampaignId.Value);
+                    if (campaign != null)
+                    {
+
+                        campaign.DonerCampaigns.Add(new DonerCampaignEntity
+                        {
+                            BloodDonerId = model.BloodDonerId,
+                            CampaignId = model.CampaignId.Value
+                        });
+
+                    }
+
+                }
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+
             }
-            return View(donation);
+            return View(model);
+
         }
+
+
+
 
         // GET: Donations/Edit/5
         public async Task<IActionResult> Edit(int? id)

@@ -23,7 +23,6 @@ namespace BloodDoner.Mvc.Models.ViewModel
         public float Weight { get; set; }
         public string? Address { get; set; }
         public DateTime? LastDonationDate { get; set; }
-
         public IFormFile? ProfilePicture { get; set; }
 
     }

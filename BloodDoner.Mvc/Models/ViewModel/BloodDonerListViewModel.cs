@@ -1,7 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-
+﻿
 namespace BloodDoner.Mvc.Models.ViewModel
 {
+    
     public class BloodDonerListViewModel
     {
         public int Id { get; set; }
@@ -16,6 +16,7 @@ namespace BloodDoner.Mvc.Models.ViewModel
 
         public string? ProfilePicture { get; set; }
         public bool IsEligible { get; set; }
-
+        public List<DonationListViewModel> Donations { get; set; } = new List<DonationListViewModel>();
+        public List<CampaignListViewModel> Campaigns { get; set; } = new List<CampaignListViewModel>();
     }
 }

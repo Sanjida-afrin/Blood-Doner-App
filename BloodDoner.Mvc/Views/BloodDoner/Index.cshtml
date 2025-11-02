@@ -1,35 +1,41 @@
-﻿@model List<BloodDonerListViewModel>
+﻿@using BloodDoner.Mvc.Models.Entities
+@using BloodDoner.Mvc.Models.ViewModel
+@model List<BloodDonerListViewModel>
 
 @{
-	ViewData["Title"] = "Blood Donor List";
+    ViewData["Title"] = "Blood Donor List";
 }
 
-<h2 class="mb-4">Blood Donor List</h2>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Blood Donor List</h2>
+    <a asp-action="Create" class="btn btn-primary">+ Add New Donor</a>
+</div>
+
 <form method="get" class="row g-2 mb-3">
-        <div class="col-md-3">
-            <select name="bloodGroup" class="form-select">
-                <option value="">All Blood Groups</option>
-                @foreach (var bg in Enum.GetNames(typeof(BloodGroup)))
-                {
-                    <option value="@bg">@bg</option>
-                }
-            </select>
-        </div>
-    
     <div class="col-md-3">
-        <input  type="text" name="address"  class="form-control" placeholder="Serch by address"/>
+        <select name="bloodGroup" class="form-select">
+            <option value="">All Blood Groups</option>
+            @foreach (var bg in Enum.GetNames(typeof(BloodGroup)))
+            {
+                <option value="@bg">@bg</option>
+            }
+        </select>
     </div>
     <div class="col-md-3">
-        <select name="IsEligible" class="form-select">
-            <option value="">All Done</option>
+        <input type="text" name="address" class="form-control" placeholder="Search by address" />
+    </div>
+    <div class="col-md-3">
+        <select name="isEligible" class="form-select">
+            <option value="">All Donor</option>
             <option value="true">Eligible</option>
             <option value="false">Not Eligible</option>
         </select>
     </div>
     <div class="col-md-3">
-        <button type="submit" class="btn btn-primary m-100">Search</button>
+        <button type="submit" class="btn btn-primary w-100">Search</button>
     </div>
 </form>
+
 <table class="table table-bordered table-striped">
     <thead class="table-dark">
         <tr>
@@ -41,7 +47,7 @@
             <th>Address</th>
             <th>Age</th>
             <th>Last Donation</th>
-            <th>Eligiblity</th>
+            <th>Eligiblility</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -50,12 +56,13 @@
         {
             <tr>
                 <td>
-                    @if(!string.IsNullOrEmpty(donor.ProfilePicture))
+                    @if (!string.IsNullOrEmpty(donor.ProfilePicture))
                     {
                         <img src="~/@donor.ProfilePicture" alt="Profile" width="60" height="60" style="object-fit:cover;" class="rounded-circle" />
                     }
-                    else{
-                        <i class="fas fa-user-circle fa-3x text-secondary"> </i>
+                    else
+                    {
+                        <i class="fas fa-user-circle fa-3x text-secondary"></i>
                     }
                 </td>
                 <td>@donor.FullName</td>
@@ -66,7 +73,7 @@
                 <td>@donor.Age</td>
                 <td>@donor.LastDonationDate</td>
                 <td>
-                    @if(donor.IsEligible)
+                    @if (donor.IsEligible)
                     {
                         <span class="badge bg-success">Eligible</span>
                     }
@@ -75,16 +82,10 @@
                         <span class="badge bg-danger">Not Eligible</span>
                     }
                 </td>
-
-
                 <td>
-                    <a asp-action="Details" asp-route-id="@donor.Id" class="btn btn-info btn-sm text-white"><i class="bi bi-eye"></i> View</a>
-                    <a asp-action="Edit" asp-route-id="@donor.Id" class="btn btn-warning btn-sm text-dark" ><i class="bi bi-pencil-square"></i> Edit</a>
-                    @if(User.HasClaim("Admin",""))
-                    {
-                        <a asp-action="Delete" asp-route-id="@donor.Id" class="btn btn-danger btn-sm"><i class="bi bi-trash"></i> Delete</a>
-
-                    }
+                    <a asp-action="Details" asp-route-id="@donor.Id" class="btn btn-sm btn-info">View</a>
+                    <a asp-action="Edit" asp-route-id="@donor.Id" class="btn btn-sm btn-warning">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@donor.Id" class="btn btn-sm btn-danger">Delete</a>
                 </td>
             </tr>
         }

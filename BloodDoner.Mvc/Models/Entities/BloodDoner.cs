@@ -23,10 +23,11 @@ namespace BloodDoner.Mvc.Models.Entities
         public float Weight { get; set; }
         public string? Address { get; set; }
         public DateTime? LastDonationDate { get; set; }
-
         public string? ProfilePicture { get; set; }
         public Collection<Donation> Donations { get; set; } = new Collection<Donation>();
+        public Collection<DonerCampaignEntity> DonerCampaigns { get; set; } = new Collection<DonerCampaignEntity>();
+
     }
-    
+
 
 }

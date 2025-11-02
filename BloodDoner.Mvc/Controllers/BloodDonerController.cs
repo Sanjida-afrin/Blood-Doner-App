@@ -68,8 +68,8 @@ namespace BloodDoner.Mvc.Controllers
                 return NotFound();
             }
             
-            var donorViewModel = _mapper.Map<BloodDonerListViewModel>(donor);
-            return View(donorViewModel);
+            var donerViewModel = _mapper.Map<BloodDonerListViewModel>(donor);
+            return View(donerViewModel);
         }
 
         public async Task<IActionResult> Edit(int id)

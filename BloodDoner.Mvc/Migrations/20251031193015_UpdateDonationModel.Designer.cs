@@ -4,6 +4,7 @@ using BloodDoner.Mvc.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BloodDoner.Mvc.Migrations
 {
     [DbContext(typeof(BloodDonerDbContext))]
-    partial class BloodDonerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251031193015_UpdateDonationModel")]
+    partial class UpdateDonationModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

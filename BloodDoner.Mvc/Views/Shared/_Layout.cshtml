@@ -32,9 +32,12 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="BloodDoner" asp-action="Index">Doner list</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Donations" asp-action="Create">New Donation</a>
-                            </li>    
-                    }
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Donations" asp-action="Index">Donations</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Campaign" asp-action="Index">Campaign</a>
+                            </li>
+                        }
                         </ul>
                     <ul class="navbar-nav">
                         @if (User.Identity?.IsAuthenticated ?? false)

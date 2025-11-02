@@ -4,6 +4,7 @@ using BloodDoner.Mvc.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BloodDoner.Mvc.Migrations
 {
     [DbContext(typeof(BloodDonerDbContext))]
-    partial class BloodDonerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251029200323_InitialRebuild")]
+    partial class InitialRebuild
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -133,23 +136,18 @@ namespace BloodDoner.Mvc.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("BloodDonerId")
+                    b.Property<int?>("BloodDonerEntityId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CampaignId")
+                    b.Property<int>("BloodDonerId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("DonationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Location")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("BloodDonerId");
-
-                    b.HasIndex("CampaignId");
+                    b.HasIndex("BloodDonerEntityId");
 
                     b.ToTable("Donations");
                 });
@@ -372,19 +370,9 @@ namespace BloodDoner.Mvc.Migrations
 
             modelBuilder.Entity("BloodDoner.Mvc.Models.Entities.Donation", b =>
                 {
-                    b.HasOne("BloodDoner.Mvc.Models.Entities.BloodDonerEntity", "BloodDoner")
+                    b.HasOne("BloodDoner.Mvc.Models.Entities.BloodDonerEntity", null)
                         .WithMany("Donations")
-                        .HasForeignKey("BloodDonerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BloodDoner.Mvc.Models.Entities.CampaignEntity", "Campaign")
-                        .WithMany()
-                        .HasForeignKey("CampaignId");
-
-                    b.Navigation("BloodDoner");
-
-                    b.Navigation("Campaign");
+                        .HasForeignKey("BloodDonerEntityId");
                 });
 
             modelBuilder.Entity("BloodDoner.Mvc.Models.Entities.DonerCampaignEntity", b =>

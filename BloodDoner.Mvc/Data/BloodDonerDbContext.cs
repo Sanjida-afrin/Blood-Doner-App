@@ -14,10 +14,24 @@ namespace BloodDoner.Mvc.Data
         }
         public DbSet<BloodDonerEntity> BloodDoners { get; set; }
         public DbSet<Donation> Donations { get; set; }
+        public DbSet<CampaignEntity> Campaigns { get; set; }
+        public DbSet<DonerCampaignEntity> DonerCampaigns { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<DonerCampaignEntity>()
+                .HasKey(dc => new { dc.BloodDonerId, dc.CampaignId });
+            
+            modelBuilder.Entity<DonerCampaignEntity>()
+                .HasOne(dc => dc.BloodDoner)
+                .WithMany(bd => bd.DonerCampaigns)
+                .HasForeignKey(dc => dc.BloodDonerId);
+
+            modelBuilder.Entity<DonerCampaignEntity>()
+                .HasOne(dc => dc.Campaign)
+                .WithMany(c => c.DonerCampaigns)
+                .HasForeignKey(dc => dc.CampaignId);
 
             modelBuilder.Entity<BloodDonerEntity>()
                 .HasData(new BloodDonerEntity
@@ -48,20 +62,20 @@ namespace BloodDoner.Mvc.Data
                     ProfilePicture = "profiles/Screenshot (178).png",
 
                 });
-            modelBuilder.Entity<IdentityRole>()
-                .HasData(new IdentityRole
-                {
-                    Id = "1",
-                    Name = "Admin",
-                    NormalizedName = "ADMIN"
-                },
+            //modelBuilder.Entity<IdentityRole>()
+            //    .HasData(new IdentityRole
+            //    {
+            //        Id = "1",
+            //        Name = "Admin",
+            //        NormalizedName = "ADMIN"
+            //    },
 
-                new IdentityRole
-                {
-                    Id = "2",
-                    Name = "Donor",
-                    NormalizedName = "Donor"
-                });
+            //    new IdentityRole
+            //    {
+            //        Id = "2",
+            //        Name = "Donor",
+            //        NormalizedName = "Donor"
+            //    });
           
         }
     }

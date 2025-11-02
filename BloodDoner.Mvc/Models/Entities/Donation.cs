@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
 
 namespace BloodDoner.Mvc.Models.Entities
 {
@@ -9,5 +8,12 @@ namespace BloodDoner.Mvc.Models.Entities
 
         [ForeignKey("BloodDoner")]
         public required int BloodDonerId { get; set; }
+        public BloodDonerEntity BloodDoner { get; set; } = null!;
+
+        [ForeignKey("Campaign")]
+        public int? CampaignId { get; set; }
+        public CampaignEntity? Campaign { get; set; }
+
+        public string? Location { get; set; }
     }
 }
