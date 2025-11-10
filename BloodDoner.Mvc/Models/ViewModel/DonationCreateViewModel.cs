@@ -15,7 +15,8 @@ namespace BloodDoner.Mvc.Models.ViewModel
         public string? Location { get; set; }
         public IEnumerable<SelectListItem> Doners { get; set; }= Enumerable.Empty<SelectListItem>();
         public IEnumerable<SelectListItem> Campaigns { get; set; } = Enumerable.Empty<SelectListItem>();
-        //public Dictionary<string, string> CampaignLocations { get; set; } = new Dictionary<string, string>();
+
+        public Dictionary<string, string> CampaignLocations { get; set; } = new Dictionary<string, string>();
 
     }
 }

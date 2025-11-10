@@ -44,6 +44,31 @@
     </div>
 </form>
 
+@* @section Scripts { *@
+@*         const locationMap = @Html.Raw(Json.Serialize(Model.CampaignLocations)); *@
+@*             console.log(locationMap); *@
+@*             const campaignSelect = document.getElementById("campaignSelect"); *@
+@*             console.log(campaignSelect); *@
+@*             const locationInput = document.getElementById("locationInput"); *@
+@*             console.log(locationInput); *@
+
+@*             function updateLocationField() { *@
+@*                 console.log("Updating location field based on campaign selection."); *@
+@*                 const selectedId = campaignSelect.value; *@
+@*                 if (selectedId && locationMap[selectedId]) { *@
+@*                     locationInput.value = locationMap[selectedId]; *@
+@*                     locationInput.readOnly = true; *@
+@*                 } else { *@
+@*                     locationInput.value = ""; *@
+@*                     locationInput.readOnly = false; *@
+@*                 } *@
+@*             } *@
+
+@*             campaignSelect.addEventListener("change", updateLocationField); *@
+@*     </script> *@
+    
+@* } *@
+
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+	<partial name="_ValidationScriptsPartial" />
 }

@@ -74,8 +74,11 @@ namespace BloodDoner.Mvc.Controllers
                  {
                      Value = c.Id.ToString(),
                      Text = c.Title
-                 }).ToList()
+                 }).ToList(),
+                CampaignLocations = _context.Campaigns
+                .ToDictionary(c => c.Title, c => c.Location)
             };
+         
             return View(donationCreateViewModel);
         }
 

@@ -33,6 +33,12 @@ namespace BloodDoner.Mvc.Data
                 .WithMany(c => c.DonerCampaigns)
                 .HasForeignKey(dc => dc.CampaignId);
 
+            //modelBuilder.Entity<Donation>()
+            //    .HasOne(d => d.BloodDoner)
+            //    .WithMany(bd => bd.Donations)
+            //    .HasForeignKey(d => d.BloodDonerId)
+            //    .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<BloodDonerEntity>()
                 .HasData(new BloodDonerEntity
                 {

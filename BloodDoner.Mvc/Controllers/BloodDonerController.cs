@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BloodDoner.Mvc.Data;
+using BloodDoner.Mvc.Filters;
 using BloodDoner.Mvc.Model;
 using BloodDoner.Mvc.Models.Entities;
 using BloodDoner.Mvc.Models.ViewModel;
@@ -10,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BloodDoner.Mvc.Controllers
 {
     [Authorize]
+    [TypeFilter(typeof(DonerAuthorizationFilter))]
     public class BloodDonerController : Controller
     {
         private readonly IFileService _fileService;
@@ -48,6 +50,7 @@ namespace BloodDoner.Mvc.Controllers
         }
 
         [HttpPost]
+        [ServiceFilter(typeof(UniqueEmailFilter))]
         public async Task<IActionResult> CreateAsync(BloodDonerCreateViewModel doner)
         {
             if (!ModelState.IsValid)

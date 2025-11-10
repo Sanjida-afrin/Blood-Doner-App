@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using BloodDoner.Mvc.Logger;
+using BloodDoner.Mvc.Models.ValidationAttributes;
+using BloodDoner.Mvc.Filters;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,24 +22,22 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 builder.Services.AddRazorPages();
-builder.Services.AddDbContextPool<BloodDonerDbContext>(options => 
+builder.Services.AddDbContext<BloodDonerDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddIdentity<IdentityUser, IdentityRole>(options=>
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 {
     options.SignIn.RequireConfirmedAccount = false;
-   
 })
 .AddEntityFrameworkStores<BloodDonerDbContext>()
 .AddDefaultTokenProviders()
 .AddDefaultUI();
 
-//Log.Logger= new LoggerConfiguration()
-//    .ReadFrom.Configuration(builder.Configuration)
-//    .CreateLogger();
-//builder.Services.AddSerilog();
-
-builder.Logging.AddProvider(new CustomLoggerProvider());
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .CreateLogger();
+builder.Services.AddSerilog();
+// builder.Logging.AddProvider(new CustomLoggerProvider());
 
 builder.Services.AddScoped<IBloodDonerRepository, BloodDonerRepository>();
 builder.Services.AddScoped<IBloodDonerService, BloodDonerService>();
@@ -45,25 +45,32 @@ builder.Services.AddTransient<IFileService, FileService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IDonationRepository, DonationRepository>();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
+builder.Services.AddScoped<UniqueEmailFilter>();
 
 builder.Configuration
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
     .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true);
 
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("MailSettings"));
-builder.Services.AddAuthorization(options=>
-    {
-        AuthorizationPolicy.AddPolicies(options);
-    });
+//builder.Services.AddAuthorization(options =>
+//{
+//    AuthorizationPolicy.AddPolicies(options);
+//});
 
 builder.Services.AddOptions<EmailSettings>()
     .BindConfiguration("EmailSettings")
     .ValidateDataAnnotations()
     .ValidateOnStart();
 
-
+builder.Services.AddControllers(options =>
+{
+    // options.Filters.Add<DonorAuthorizationFilter>(order: 1);
+    options.Filters.Add<GlobalExceptionFilter>();
+});
 
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -76,7 +83,6 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
-app.UseMiddleware<IPWhiteListingMiddleware>();
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -91,6 +97,7 @@ app.MapControllerRoute(
 app.MapRazorPages();
 
 await app.SeedDatabaseAsync();
-//app.UseSerilogRequestLogging();
+
+app.UseSerilogRequestLogging();
 
 app.Run();

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using BloodDoner.Mvc.Models.Entities;
+using BloodDoner.Mvc.Models.ValidationAttributes;
 
 namespace BloodDoner.Mvc.Models.ViewModel
 {
@@ -8,13 +9,15 @@ namespace BloodDoner.Mvc.Models.ViewModel
         [Required]
         public required string FullName { get; set; }
 
-        [Required]
-        [StringLength(15, MinimumLength = 10)]
+        [Phone]
+        [Length(15, 10)]
         public required string ContactNumber { get; set; }
-
+       
+        [MinimumAge(18)]
         public required DateTime DateofBirth { get; set; }
 
         [EmailAddress]
+        //[UniqueEmail(ErrorMessage = "Email already exist.")]
         public required string Email { get; set; }
         public required BloodGroup BloodGroup { get; set; }
 
